@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/security
+                           http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+	<security:http auto-config="true" use-expressions="true">
+		<security:form-login login-page="/login"
+			default-target-url="/Maker" authentication-failure-url="/fail2login" />
+		<security:intercept-url pattern="/Maker*"
+			access="hasRole('ADMIN')" />
+
+		<security:logout logout-success-url="/logout" />
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<!--<security:user-service> <security:user name="kk" password="hh" authorities="ROLE_maker" 
+				/> </security:user-service> -->
+			<security:jdbc-user-service
+				data-source-ref="dataSource"
+				users-by-username-query="select username, password, enabled from user_base where username=?"
+				authorities-by-username-query="select username, role from user_role_base where username =?  " />
+
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>
